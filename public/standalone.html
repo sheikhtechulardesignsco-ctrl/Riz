@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIZ — Book Cover Design & Illustration Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070709;
+      --surface: #0e0f14;
+      --card: #13141c;
+      --accent: #00d2ff;
+      --accent-bright: #38bdf8;
+      --accent-dim: rgba(0, 210, 255, 0.2);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --font-display: 'Syne', sans-serif;
+      --font-serif: 'Cinzel', serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--bg); color: var(--text); font-family: var(--font-body); }
+    body { background-color: var(--bg); min-height: 100vh; overflow-x: hidden; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+    header { position: sticky; top: 0; z-index: 50; background: rgba(7,7,9,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--accent-dim); padding: 1rem 0; }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-family: var(--font-display); font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 0.25rem; }
+    .brand-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+    .nav-links a:hover { color: var(--accent); }
+    .btn-accent { background: var(--accent); color: #070709; padding: 0.5rem 1.25rem; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-radius: 2px; transition: background 0.2s, transform 0.2s; display: inline-block; }
+    .btn-accent:hover { background: var(--accent-bright); transform: translateY(-1px); }
+    .btn-outline { border: 1px solid var(--accent-dim); color: var(--text); padding: 0.5rem 1.25rem; font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-radius: 2px; transition: all 0.2s; display: inline-block; }
+    .btn-outline:hover { border-color: var(--accent); background: rgba(0,210,255,0.08); }
+
+    /* Hero */
+    .hero-sec { padding: 5rem 0 6rem; border-bottom: 1px solid var(--accent-dim); }
+    .creator-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); font-weight: 600; }
+    .creator-name { font-family: var(--font-display); font-size: 2.25rem; font-weight: 800; margin-top: 0.5rem; }
+    .creator-sub { font-family: var(--font-serif); font-size: 1.25rem; color: var(--accent-bright); font-style: italic; }
+    .hero-title { font-family: var(--font-display); font-size: 3.25rem; font-weight: 800; line-height: 1.08; margin: 1.5rem 0; }
+    @media (max-width: 768px) { .hero-title { font-size: 2.25rem; } }
+    .hero-desc { color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2.5rem; max-width: 750px; }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* Fixed Inputs */
+    .tab-input {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      z-index: -9999 !important;
+    }
+
+    /* Interesting Tabs */
+    .filter-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 2.5rem 0 3.5rem; background: #0c0d13; padding: 0.6rem; border-radius: 4px; border: 1px solid rgba(0,210,255,0.2); }
+    .filter-label { padding: 1rem 1.25rem; background: #111219; border: 1px solid rgba(255,255,255,0.06); border-radius: 3px; cursor: pointer; transition: all 0.25s ease; display: flex; justify-content: space-between; align-items: center; }
+    .filter-label:hover { border-color: rgba(0,210,255,0.4); background: #161822; }
+    .tab-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text); }
+    .tab-desc { font-size: 0.75rem; color: var(--muted); display: block; margin-top: 0.2rem; }
+
+    #tab-covers:checked ~ .container .filter-tabs label[for="tab-covers"],
+    #tab-children:checked ~ .container .filter-tabs label[for="tab-children"] {
+      background: linear-gradient(135deg, rgba(0,210,255,0.12), rgba(2,132,199,0.22));
+      border-color: var(--accent);
+      box-shadow: 0 0 25px rgba(0,210,255,0.2);
+    }
+    #tab-covers:checked ~ .container .filter-tabs label[for="tab-covers"] .tab-title,
+    #tab-children:checked ~ .container .filter-tabs label[for="tab-children"] .tab-title {
+      color: var(--accent);
+    }
+
+    #tab-covers:checked ~ .container .gallery-grid .card:not(.cat-covers) { display: none !important; }
+    #tab-children:checked ~ .container .gallery-grid .card:not(.cat-children) { display: none !important; }
+
+    /* Works Grid */
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+    .card { background: var(--surface); border: 1px solid var(--accent-dim); border-radius: 3px; display: flex; flex-direction: column; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+    .card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 20px 45px rgba(0,0,0,0.85), 0 0 25px rgba(0,210,255,0.15); }
+    .card-thumb { aspect-ratio: 2/3; width: 100%; position: relative; overflow: hidden; background: #0c0c0e; border-bottom: 1px solid var(--accent-dim); }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .card:hover .card-thumb img { transform: scale(1.05); }
+    .card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-genre { font-size: 0.7rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+    .card-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; line-height: 1.3; }
+    .card-author { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+    .card-blurb { font-size: 0.8rem; color: var(--muted); margin: 0.75rem 0; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-foot { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+    .card-link { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Modals (:target) */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(5,6,9,0.92); backdrop-filter: blur(14px); z-index: 100; align-items: center; justify-content: center; padding: 1.5rem; }
+    .modal-overlay:target { display: flex; }
+    .modal-box { background: var(--surface); border: 1px solid var(--accent); max-width: 860px; width: 100%; max-height: 88vh; overflow-y: auto; padding: 2.5rem; border-radius: 4px; box-shadow: 0 25px 60px rgba(0,0,0,0.95); position: relative; }
+    .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border-radius: 2px; font-weight: 700; color: #fff; }
+    .modal-close:hover { background: var(--accent); color: #000; }
+    .modal-grid { display: grid; grid-template-columns: 260px 1fr; gap: 2.5rem; margin-top: 1.5rem; align-items: start; }
+    @media (max-width: 650px) { .modal-grid { grid-template-columns: 1fr; } }
+    .modal-cover { aspect-ratio: 2/3; border-radius: 2px; overflow: hidden; border: 1px solid var(--accent-dim); box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+    .modal-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-info h3 { font-family: var(--font-display); font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .modal-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-top: 1rem; }
+    .quote-box { font-family: var(--font-serif); font-style: italic; color: var(--accent-bright); border-left: 2px solid var(--accent); padding-left: 0.75rem; font-size: 0.9rem; margin: 0.75rem 0; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--accent-dim); padding: 4rem 0 2.5rem; background: #050608; }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+    @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- FIXED INPUTS -->
+  <input type="radio" id="tab-covers" name="p-filter" class="tab-input" checked>
+  <input type="radio" id="tab-children" name="p-filter" class="tab-input">
+
+  <header>
+    <div class="container nav-flex">
+      <a href="#" class="brand">RIZ<span class="brand-dot"></span></a>
+      <nav class="nav-links">
+        <a href="#about">Overview</a>
+        <a href="#portfolio">Works</a>
+        <a href="mailto:sheikhtechulardesignsco@gmail.com" class="btn-accent">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="about" class="hero-sec">
+    <div class="container">
+      <div class="creator-tag">Creative Director & Lead Illustrator</div>
+      <div class="creator-name">Riz the Wizz</div>
+      <div class="creator-sub">Your go-to creative bloke</div>
+      <h1 class="hero-title">Crafting iconic book packaging & whimsical storybook universes.</h1>
+      <p class="hero-desc">From atmospheric psychological noir thrillers and personal memoirs to beloved, character-driven children’s adventures. Delivering distinctive visual depth, meticulous typography, and tactile storytelling across print and digital editions worldwide.</p>
+      <div class="hero-ctas">
+        <a href="mailto:sheikhtechulardesignsco@gmail.com" class="btn-accent">Start a Commission</a>
+        <a href="#portfolio" class="btn-outline">Explore Selected Works ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO WITH INTERESTING TABS -->
+  <section id="portfolio" class="container" style="padding-top: 4rem;">
+    <div class="creator-tag">Selected Works</div>
+    <h2 style="font-family: var(--font-display); font-size: 2.25rem;">Curated Portfolio</h2>
+
+    <!-- Interesting Tabs -->
+    <div class="filter-tabs">
+      <label for="tab-covers" class="filter-label">
+        <div>
+          <span class="tab-title">✦ Book Covers & Novels</span>
+          <span class="tab-desc">Southern Noir · Thrillers · Memoirs</span>
+        </div>
+        <span style="font-family: monospace; font-size: 0.8rem; color: var(--muted);">01</span>
+      </label>
+
+      <label for="tab-children" class="filter-label">
+        <div>
+          <span class="tab-title">★ Children's Illustrated</span>
+          <span class="tab-desc">Storybooks · Whimsical Character Art</span>
+        </div>
+        <span style="font-family: monospace; font-size: 0.8rem; color: var(--muted);">02</span>
+      </label>
+    </div>
+
+    <div class="gallery-grid">
+      <!-- 1. Beneath the Foxglove -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/beneath_foxglove_book_1790810195160.jpg" alt="Beneath the Foxglove">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Southern Noir · Mystery</div>
+            <h3 class="card-title">Beneath the Foxglove</h3>
+            <div class="card-author">G.K. Boni</div>
+            <p class="card-blurb">In Peki, secrets don’t stay buried. They push up through the red earth—bright, poisonous, and sharp as regret.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-beneath-the-foxglove" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. STORM -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/storm_novel_book_1790810224889.jpg" alt="STORM">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Literary Drama · Resilience</div>
+            <h3 class="card-title">STORM</h3>
+            <div class="card-author">Susan Wilson</div>
+            <p class="card-blurb">A story about a troubled young girl fighting through early motherhood and heartbreak to keep her family intact.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-storm" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. Surviving the Game -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/surviving_game_book_1790810787497.jpg" alt="Surviving the Game">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Memoir · Leadership</div>
+            <h3 class="card-title">Surviving the Game</h3>
+            <div class="card-author">Mrs. Kimberly Watkins-Almond</div>
+            <p class="card-blurb">A raw journey through childcare entrepreneurship, pandemic crises, and building an enduring community legacy.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-surviving-the-game" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. The Bad Board Members -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/bad_board_book_1790810800937.jpg" alt="The Bad Board Members">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Whistleblower Non-Fiction</div>
+            <h3 class="card-title">The Bad Board Members</h3>
+            <div class="card-author">Mrs. Kimberly Watkins-Almond</div>
+            <p class="card-blurb">A 17-year front-row seat to corruption, kickbacks, and unchecked egos inside deeply dysfunctional districts.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-the-bad-board-members" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. Ven of Nordia -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/ven_nordia_book_1790810814852.jpg" alt="Ven of Nordia">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Epic Dark Fantasy</div>
+            <h3 class="card-title">Ven of Nordia</h3>
+            <div class="card-author">Ezu Feboke</div>
+            <p class="card-blurb">Ancient runic thrones, blood oaths, and spectral emerald crowns colliding across snowcapped northern peaks.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-ven-of-nordia" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. Leveraging the Power of the Process -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/power_process_book_1790810830281.jpg" alt="Leveraging the Power of the Process">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Executive Leadership</div>
+            <h3 class="card-title">Power of the Process</h3>
+            <div class="card-author">Dr. Cedric B. Howard</div>
+            <p class="card-blurb">A masterclass in discipline, sustained momentum, and high-performance execution drawing from three decades.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-leveraging-the-power" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7. Legendary Tales -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/legendary_tales_book_1790810927268.jpg" alt="Legendary Tales">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Dark Fantasy Anthology</div>
+            <h3 class="card-title">Legendary Tales</h3>
+            <div class="card-author">T.P. Taylor</div>
+            <p class="card-blurb">Journey into twilight cemeteries and shadowed realms where wyverns stalk the moonlight and ancient lore awakens.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-legendary-tales" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8. Chasing Greatness -->
+      <article class="card cat-covers">
+        <div class="card-thumb">
+          <img src="/src/assets/images/chasing_greatness_book_1790810940690.jpg" alt="Chasing Greatness">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Sports Biography</div>
+            <h3 class="card-title">Chasing Greatness</h3>
+            <div class="card-author">Dr. Darren Johnson</div>
+            <p class="card-blurb">Tad Danielson tackles the grit, sacrifice, and psychological pressure of elite athletic ambition under stadium lights.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-chasing-greatness" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Cover Design</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9. Carboot Karma -->
+      <article class="card cat-children">
+        <div class="card-thumb">
+          <img src="/src/assets/images/carboot_karma_book_1790810210737.jpg" alt="Carboot Karma">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Children's Illustrated</div>
+            <h3 class="card-title">Carboot Karma</h3>
+            <div class="card-author">Illustrated by: Riz Wan</div>
+            <p class="card-blurb">Aiden works hard at a local car boot sale, only to make a selfless choice that rewards him in a magical way.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-carboot-karma" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Illustration</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10. Hector The Hermit Crab -->
+      <article class="card cat-children">
+        <div class="card-thumb">
+          <img src="/src/assets/images/hector_crab_book_1790810702445.jpg" alt="Hector The Hermit Crab">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Children's Literature</div>
+            <h3 class="card-title">Hector The Hermit Crab</h3>
+            <div class="card-author">Illustrated by: Riz Wan</div>
+            <p class="card-blurb">Jimmy and Tammy realize true love means letting their pet hermit crab return to his family in the ocean lagoon.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-hector-the-hermit-crab" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Illustration</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 11. Hide-and-Seek -->
+      <article class="card cat-children">
+        <div class="card-thumb">
+          <img src="/src/assets/images/hide_seek_book_1790810719361.jpg" alt="Hide-and-Seek">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Children's Adventure</div>
+            <h3 class="card-title">Hide-and-Seek</h3>
+            <div class="card-author">Illustrated by: Riz Wan</div>
+            <p class="card-blurb">A simple game leads into a hidden cave with an ancient chest of jewels, teaching integrity and sharing.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-hide-and-seek" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Illustration</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 12. Maisie Manners -->
+      <article class="card cat-children">
+        <div class="card-thumb">
+          <img src="/src/assets/images/maisie_manners_book_1790810733597.jpg" alt="Maisie Manners">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Social Learning</div>
+            <h3 class="card-title">Maisie Manners</h3>
+            <div class="card-author">Illustrated by: Riz Wan</div>
+            <p class="card-blurb">Maisie showers kindness with every twirl, showing Naughty Nathan that manners cost nothing but build friendships.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-maisie-manners" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Illustration</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 13. Sunny Meadows Woodland School -->
+      <article class="card cat-children">
+        <div class="card-thumb">
+          <img src="/src/assets/images/sunny_meadows_book_1790810747186.jpg" alt="Sunny Meadows Woodland School">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Woodland Adventure</div>
+            <h3 class="card-title">Sunny Meadows Woodland School</h3>
+            <div class="card-author">Illustrated by: Riz Wan</div>
+            <p class="card-blurb">Hank the shy hedgehog curls into a protective spiky shield when a snake attacks, proving differences are strengths.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-sunny-meadows" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Illustration</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 14. The Tooth Fairies -->
+      <article class="card cat-children">
+        <div class="card-thumb">
+          <img src="/src/assets/images/tooth_fairies_book_1790810762292.jpg" alt="The Tooth Fairies">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="card-genre">Magical Education</div>
+            <h3 class="card-title">The Tooth Fairies</h3>
+            <div class="card-author">Illustrated by: Riz Wan</div>
+            <p class="card-blurb">Incisor, Canine, and Molar craft a healthy tooth guide delivered under sleeping pillows to protect children's smiles.</p>
+          </div>
+          <div class="card-foot">
+            <a href="#modal-the-tooth-fairies" class="card-link">Inspect Work</a>
+            <span style="color: var(--muted);">Illustration</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom: 0.5rem;">RIZ<span class="brand-dot"></span></div>
+        <div style="color: var(--accent); font-family: var(--font-serif); font-style: italic; margin-bottom: 1rem;">Riz the Wizz — Your go-to creative bloke</div>
+        <p style="font-size: 0.85rem; color: var(--muted); max-width: 440px;">Dedicated to authorial distinction, atmospheric book covers, and heartwarming children's universes worldwide.</p>
+      </div>
+
+      <div>
+        <div class="creator-tag">Direct Inquiries</div>
+        <a href="mailto:sheikhtechulardesignsco@gmail.com" style="font-family: monospace; font-size: 1.25rem; color: var(--text); text-decoration: underline; text-decoration-color: var(--accent);">
+          sheikhtechulardesignsco@gmail.com
+        </a>
+        <div style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted);">
+          © 2026 RIZ Studio. Built with semantic HTML5 & modern CSS3. Zero JavaScript.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PURE CSS MODALS -->
+  <div id="modal-beneath-the-foxglove" class="modal-overlay">
+    <a href="#portfolio" class="modal-close" style="top:0;right:0;width:100%;height:100%;background:transparent;"></a>
+    <div class="modal-box">
+      <a href="#portfolio" class="modal-close">✕</a>
+      <div class="creator-tag">Southern Noir · Mystery Thriller</div>
+      <h3 style="font-family: var(--font-display); font-size: 2rem;">Beneath the Foxglove</h3>
+      <div style="font-size: 0.85rem; color: var(--muted);">By G.K. Boni · Cover Design by Riz the Wizz</div>
+      <div class="modal-grid">
+        <div class="modal-cover">
+          <img src="/src/assets/images/beneath_foxglove_book_1790810195160.jpg" alt="Beneath the Foxglove">
+        </div>
+        <div>
+          <div class="quote-box" style="font-size: 1rem;">"In a village full of secrets, even beauty can kill."</div>
+          <div class="modal-desc">
+            In Peki, secrets don’t stay buried. They push up through the red earth—bright, poisonous, and sharp as regret. Detective Fafa Bankas—former beauty queen, now wearing suspicion like a second skin—comes home to a village choking on silence. Here, poison smiles and every handshake hides a blade. In Peki, the truth doesn’t set you free; it puts you in the ground.
+          </div>
+          <div style="margin-top: 2rem;">
+            <a href="mailto:sheikhtechulardesignsco@gmail.com?subject=Commission%20Inquiry%20(Beneath%20the%20Foxglove)" class="btn-accent">Commission Similar Cover</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-carboot-karma" class="modal-overlay">
+    <a href="#portfolio" class="modal-close" style="top:0;right:0;width:100%;height:100%;background:transparent;"></a>
+    <div class="modal-box">
+      <a href="#portfolio" class="modal-close">✕</a>
+      <div class="creator-tag">Children's Illustrated Book</div>
+      <h3 style="font-family: var(--font-display); font-size: 2rem;">Carboot Karma</h3>
+      <div style="font-size: 0.85rem; color: var(--muted);">Illustrated by: Riz Wan (Riz the Wizz)</div>
+      <div class="modal-grid">
+        <div class="modal-cover">
+          <img src="/src/assets/images/carboot_karma_book_1790810210737.jpg" alt="Carboot Karma">
+        </div>
+        <div>
+          <div class="quote-box" style="font-size: 1rem;">"Kindness always finds its way back home."</div>
+          <div class="modal-desc">
+            Aiden spots a pair of dream trainers in a shop window, but knowing his family's budget is tight, he sets up a blanket stall at the local car boot sale. Selling his old toys and learning to count change, Aiden earns enough—only to spend his coins on a needed school uniform for his little sister. A heartwarming tale of generosity and karma.
+          </div>
+          <div style="margin-top: 2rem;">
+            <a href="mailto:sheikhtechulardesignsco@gmail.com?subject=Children's%20Illustration%20Inquiry" class="btn-accent">Commission Illustration</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-storm" class="modal-overlay">
+    <a href="#portfolio" class="modal-close" style="top:0;right:0;width:100%;height:100%;background:transparent;"></a>
+    <div class="modal-box">
+      <a href="#portfolio" class="modal-close">✕</a>
+      <div class="creator-tag">Literary Fiction · Drama</div>
+      <h3 style="font-family: var(--font-display); font-size: 2rem;">STORM</h3>
+      <div style="font-size: 0.85rem; color: var(--muted);">By Susan Wilson · Cover Design by Riz the Wizz</div>
+      <div class="modal-grid">
+        <div class="modal-cover">
+          <img src="/src/assets/images/storm_novel_book_1790810224889.jpg" alt="STORM">
+        </div>
+        <div>
+          <div class="quote-box" style="font-size: 1rem;">"Time truly is the greatest healer, even in immense grief and tragedy."</div>
+          <div class="modal-desc">
+            A story about a troubled young girl who had to fight through life to make ends meet. After becoming a mother at fourteen and starting a family with her lover, she hoped for betterment, but life had its own set of plans. Dive into her life and learn how she attempts to keep her small family safe.
+          </div>
+          <div style="margin-top: 2rem;">
+            <a href="mailto:sheikhtechulardesignsco@gmail.com?subject=Cover%20Inquiry%20(STORM)" class="btn-accent">Commission Cover</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

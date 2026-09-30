@@ -1,0 +1,6 @@
+{
+  "name": "RIZ — Book Cover Design & Illustration Studio",
+  "description": "Minimalist, gallery-style showcase portfolio for Riz the Wizz, featuring literary cover art, children's book illustrations, and visual identity systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

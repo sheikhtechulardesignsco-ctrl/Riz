@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+:root {
+  --color-obsidian-deep: #070709;
+  --color-obsidian-surface: #0e0f14;
+  --color-obsidian-card: #13141c;
+  --color-obsidian-card-hover: #191b26;
+  --color-ice-white: #f8fafc;
+  --color-silver-muted: #94a3b8;
+  
+  /* Modern Electric Cyan / Azure Studio Palette (Replacing Gold) */
+  --color-accent: #00d2ff;
+  --color-accent-bright: #38bdf8;
+  --color-accent-glow: rgba(0, 210, 255, 0.25);
+  --color-accent-hairline: rgba(0, 210, 255, 0.2);
+  --color-accent-active: #0284c7;
+
+  --font-display: 'Syne', sans-serif;
+  --font-serif: 'Cinzel', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-obsidian-deep);
+  color: var(--color-ice-white);
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--color-obsidian-deep);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.08) 0%, transparent 55%),
+    radial-gradient(circle at 90% 40%, rgba(56, 189, 248, 0.04) 0%, transparent 40%);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.cyan-glow {
+  box-shadow: 0 0 50px -10px var(--color-accent-glow);
+}
+
+.cyan-border {
+  border: 1px solid var(--color-accent-hairline);
+}
+
+/* 3D Book Cover perspective effect */
+.book-wrapper {
+  perspective: 1200px;
+}
+
+.book-card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+  position: relative;
+}
+
+.book-card-3d::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(255, 255, 255, 0.08) 100%);
+  pointer-events: none;
+  z-index: 10;
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
+}
+
+.book-card-3d:hover {
+  transform: translateY(-8px) rotateY(-5deg) scale(1.02);
+  box-shadow: 20px 25px 45px -12px rgba(0, 0, 0, 0.9), 0 0 35px var(--color-accent-glow);
+}
+
+/* Pure CSS Tab Filter Inputs - FIXED POSITION NEVER JUMPS SCROLL */
+.portfolio-tab-input {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  z-index: -9999 !important;
+}
+
+/* BESPOKE INTERESTING TABS STYLING */
+.tab-button-custom {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #111218;
+}
+
+.tab-button-custom:hover {
+  border-color: rgba(0, 210, 255, 0.35);
+  background: #151722;
+}
+
+/* Active Tab indicator states based on radio checked */
+#tab-covers:checked ~ .tabs-wrapper label[for="tab-covers"],
+#tab-children:checked ~ .tabs-wrapper label[for="tab-children"] {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.12) 0%, rgba(2, 132, 199, 0.22) 100%);
+  border-color: var(--color-accent);
+  color: #ffffff;
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.22), inset 0 0 15px rgba(0, 210, 255, 0.08);
+}
+
+#tab-covers:checked ~ .tabs-wrapper label[for="tab-covers"] .tab-indicator-dot,
+#tab-children:checked ~ .tabs-wrapper label[for="tab-children"] .tab-indicator-dot {
+  background-color: var(--color-accent);
+  box-shadow: 0 0 12px var(--color-accent);
+  opacity: 1;
+}
+
+#tab-covers:checked ~ .tabs-wrapper label[for="tab-covers"] .tab-title-text,
+#tab-children:checked ~ .tabs-wrapper label[for="tab-children"] .tab-title-text {
+  color: var(--color-accent);
+}
+
+/* Tab separation logic */
+#tab-covers:checked ~ main .gallery-grid .card-item:not(.cat-covers) {
+  display: none !important;
+}
+
+#tab-children:checked ~ main .gallery-grid .card-item:not(.cat-children) {
+  display: none !important;
+}
+
+/* Pure CSS Modal System via :target */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(5, 6, 9, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay:target {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content-box {
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--color-obsidian-surface);
+  border: 1px solid var(--color-accent-hairline);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 210, 255, 0.15);
+  position: relative;
+  animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #070709;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e2230;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
